@@ -1,0 +1,28 @@
+version: "3.7"
+
+x-web-volumes: &web-volumes
+  - .:/app:cached
+  - bundle_cache:/bundle_cache
+
+x-web-environment: &web-environment
+  - BUNDLE_PATH=/bundle_cache
+  - GEM_HOME=/bundle_cache
+  - GEM_PATH=/bundle_cache
+  - PORT=4000
+
+services:
+  web:
+    build: .
+    volumes: *web-volumes
+    ports:
+      - "4000:4000"
+    environment: *web-environment
+    command: bash -c "bundle exec rackup"
+
+  bundle_cache:
+    image: busybox
+    volumes:
+      - bundle_cache:/bundle_cache
+
+volumes:
+  bundle_cache:
